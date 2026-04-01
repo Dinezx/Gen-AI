@@ -73,6 +73,7 @@ with col1:
         value=st.session_state.get("prompt_input", "Create a form with Name and Capacity fields"),
         height=160,
     )
+    prompt_text = prompt or ""
 
     context: dict[str, Any] = {}
     if mode == "fix_powerapps_error":
@@ -80,11 +81,11 @@ with col1:
         context["error_message"] = st.text_area("Error message", height=100)
 
     if st.button("Run AI", type="primary"):
-        if not prompt.strip():
+        if not prompt_text.strip():
             st.error("Prompt is required.")
         else:
             payload = {
-                "prompt": prompt,
+                "prompt": prompt_text,
                 "mode": mode,
                 "provider": provider,
                 "context": context or None,

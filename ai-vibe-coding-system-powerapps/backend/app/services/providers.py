@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from typing import cast
 
 import httpx
 from openai import AsyncOpenAI
+from openai.types.chat import ChatCompletionMessageParam
 
 from app.core.config import Settings
 
@@ -44,9 +46,10 @@ class OpenAIProvider(LLMProvider):
         self.model = settings.openai_model
 
     async def generate(self, messages: list[dict[str, str]]) -> str:
+        typed_messages = cast(list[ChatCompletionMessageParam], messages)
         completion = await self.client.chat.completions.create(
             model=self.model,
-            messages=messages,
+            messages=typed_messages,
             temperature=0.1,
         )
         return completion.choices[0].message.content or ""
